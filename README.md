@@ -1,2 +1,1 @@
-# SOILD_example
-Demonstrating the SOILD principles through an example relevant to scientific computing.
+Demonstrating solid principles in a heat-equation FD code.
