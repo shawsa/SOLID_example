@@ -23,7 +23,7 @@ import sympy as sym
 
 
 def euler_update(t, u, f, h):
-    return u + h*rhs(t, u)
+    return u + h*f(t, u)
 
 
 def RK4_update(t, u, f, h):
