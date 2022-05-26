@@ -52,6 +52,12 @@ def main():
 
     tf = 10
     dt = 0.1
+    # The function call to "solve" has been replaced by creating these two
+    # objects, then calling a function from them. Some people find this
+    # asthetically displeasing, but there is no real difference. The value of
+    # solid isn't seen here, it's seen in the back end. When we want to add a
+    # new method, or add a new kind of return-value functionality, we can
+    # do so without changing any code, simlpy adding more.
     time = TimeDomain_Start_Stop_MaxSpacing(t0, tf, dt)
     solver = AB2(Euler(), 2)
     ts, us = solver.solve(u0, rhs, time)
@@ -79,6 +85,9 @@ def main():
         errors = []
         for dt in dts:
             time = TimeDomain_Start_Stop_MaxSpacing(t0, tf, dt)
+            # In the old code we used ret='last' to change the behavior of
+            # the "solve" function. Here, we call a different function. This is the
+            # "Strategy Pattern" in action.
             uf = solver.t_final(u0, rhs, time)
             errors.append(uf - u_true(tf))
         error_dict[solver.name] = errors.copy()
