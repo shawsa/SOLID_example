@@ -1,8 +1,6 @@
 Demonstrating SOLID principles in an ODE solver code. This repository serves
 as an exercise in refactoring a numerical code using the SOLID principles.
 
-Demonstrating SOLID principles in an ODE solver code. This repository serves as an exercise in refactoring a numerical code using the SOLID principles.
-
 # Instructions:
 
 - Watch the [video by ArjanCodes](https://www.youtube.com/watch?v=pTB30aXS77U&t=1006s)
