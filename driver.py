@@ -16,10 +16,12 @@ Specifications of the assignment:
     Demonstrate correctness with the following
         Plot the exact and approximate solutions (error on semi-log)
 '''
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sym
-from time_domain import TimeDomain, TimeDomain_Start_Spacing_Stop
+from time_domain import TimeDomain, TimeDomain_Start_Stop_MaxSpacing
+
 from time_integrator import Euler, RK4, AB2
 
 
@@ -49,13 +51,9 @@ def main():
     ###################
 
     tf = 10
-    max_spacing = 0.1
-    time = TimeDomain_Start_Spacing_Stop(t0, max_spacing, tf)
-    print(f'Rectifying time step to {time.spacing} from {max_spacing}')
-    # solver = Euler()
-    # solver = RK4()
-    # solver = AB2(Euler(), 2)
-    solver = AB2(RK4(), 1)
+    dt = 0.1
+    time = TimeDomain_Start_Stop_MaxSpacing(t0, tf, dt)
+    solver = AB2(Euler(), 2)
     ts, us = solver.solve(u0, rhs, time)
 
     fig, axes = plt.subplots(2, 1, figsize=(10, 10), sharex=True)
@@ -75,31 +73,28 @@ def main():
     ###################
 
     tf = 1_000
-    max_dts = [.9 * 2**(-i) for i in range(1, 6)]
+    dts = [.9 * 2**(-i) for i in range(1, 6)]
     error_dict = {}
-    for solver in [Euler(),
-                   RK4(),
-                   AB2(Euler(), 2),
-                   AB2(AB2(Euler(), 2), 2)]:
+    for solver in [Euler(), RK4(), AB2(Euler(), 2)]:
         errors = []
-        for max_dt in max_dts:
-            time = TimeDomain_Start_Spacing_Stop(t0, max_dt, tf)
+        for dt in dts:
+            time = TimeDomain_Start_Stop_MaxSpacing(t0, tf, dt)
             uf = solver.t_final(u0, rhs, time)
             errors.append(uf - u_true(tf))
-        error_dict[str(solver)] = errors.copy()
+        error_dict[solver.name] = errors.copy()
 
     # fig = plt.figure('Convergence')
 
     for method, errors in error_dict.items():
-        order = get_order(errors[-2], errors[-1],
-                          max_dts[-2], max_dts[-1])
+        order = get_order(errors[-2], errors[-1], dts[-2], dts[-1])
         order_str = f' $\\mathcal{{O}}({order:.1f})$'
-        plt.loglog(max_dts, errors, '.-', label=method + order_str)
+        plt.loglog(dts, errors, '.-', label=method + order_str)
 
     plt.xlabel(r'$\Delta_t$')
     plt.ylabel('Error')
     plt.legend()
     plt.show()
+
 
 if __name__ == '__main__':
     main()
